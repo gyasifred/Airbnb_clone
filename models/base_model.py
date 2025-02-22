@@ -17,13 +17,30 @@ class BaseModel:
         updated_at (datetime): datetime when an instance is created and updated every time the object is changed.
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """
         Initialize a new BaseModel instance.
+
+        If kwargs is not empty:
+            - Each key in kwargs is used as an attribute name,
+              except for the key '__class__' which is ignored.
+            - For 'created_at' and 'updated_at', convert the string value to a datetime object.
+        Otherwise:
+            - Create a new id and set created_at and updated_at to the current datetime.
         """
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        if kwargs:
+            for key, value in kwargs.items():
+                if key == "__class__":
+                    continue
+                if key in ("created_at", "updated_at"):
+                    setattr(self, key, datetime.strptime(
+                        value, "%Y-%m-%dT%H:%M:%S.%f"))
+                else:
+                    setattr(self, key, value)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def __str__(self):
         """
@@ -55,7 +72,3 @@ class BaseModel:
         if "updated_at" in dict_copy:
             dict_copy["updated_at"] = self.updated_at.isoformat()
         return dict_copy
-
-
-
-
