@@ -7,7 +7,7 @@ It allows users to interact with the application using a command-line interface.
 import cmd
 from models import storage
 from models.base_model import BaseModel
-
+from models.user import User 
 
 class HBNBCommand(cmd.Cmd):
     """
@@ -16,10 +16,13 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = "(hbnb) "
-    classes = {"BaseModel": BaseModel}
+    classes = {
+        "BaseModel": BaseModel,
+        "User": User 
+    }
 
     def do_create(self, arg):
-        """Creates a new instance of BaseModel, saves it, and prints the id."""
+        """Creates a new instance of a class, saves it, and prints the id."""
         if not arg:
             print("** class name missing **")
             return
